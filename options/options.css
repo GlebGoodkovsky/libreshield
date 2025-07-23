@@ -206,3 +206,36 @@ textarea { min-height: 150px; font-family: monospace; resize: vertical; }
 .cancel-btn:hover {
     background-color: #5a6268;
 }
+
+/* --- New Password Management Styles --- */
+.password-management-section {
+    margin-top: 15px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+#passwordManagementContainer {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px dashed var(--border-color);
+    border-radius: 5px;
+}
+
+#passwordManagementContainer hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 15px 0;
+}
+
+.forgot-password-link {
+    font-size: 0.8em;
+    margin-top: 15px;
+}
+
+.forgot-password-link a {
+    color: var(--button-background);
+    text-decoration: none;
+}
+.forgot-password-link a:hover {
+    text-decoration: underline;
+}

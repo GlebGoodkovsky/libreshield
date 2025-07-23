@@ -8,8 +8,6 @@
 <body>
     <div class="container">
 
-        <!-- --- START OF NEW AUTHENTICATION CODE --- -->
-
         <!-- This container is shown when NO password is set -->
         <div id="setPasswordContainer" class="auth-container" style="display: none;">
             <h1>Set a Password for LibreShield</h1>
@@ -27,12 +25,11 @@
             <input type="password" id="passwordInput" placeholder="Password">
             <button id="unlockBtn">Unlock</button>
             <p id="loginError" class="error-message"></p>
+            <p class="forgot-password-link"><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
         </div>
 
-        <!-- --- END OF NEW AUTHENTICATION CODE --- -->
 
-
-        <!-- This container holds all your existing settings and is hidden by default -->
+        <!-- This container holds all settings and is hidden until unlocked -->
         <div id="settingsContainer" style="display: none;">
             <h1>LibreShield Settings</h1>
 
@@ -81,17 +78,38 @@
             <button id="saveButton">Save Settings</button>
             <div id="status"></div>
 
-    <!-- --- START OF NEW SAVE CONFIRMATION CODE --- -->
-    <div id="saveConfirmationContainer" style="display: none;">
-        <p>Please enter your password to confirm changes:</p>
-        <div class="input-group">
-            <input type="password" id="savePasswordConfirm" placeholder="Password">
-            <button id="confirmSaveBtn" class="confirm-btn">Confirm Save</button>
-            <button id="cancelSaveBtn" class="cancel-btn">Cancel</button>
-        </div>
-        <p id="saveConfirmError" class="error-message"></p>
-    </div>
-    <!-- --- END OF NEW SAVE CONFIRMATION CODE --- -->
+            <div id="saveConfirmationContainer" style="display: none;">
+                <p>Please enter your password to confirm changes:</p>
+                <div class="input-group">
+                    <input type="password" id="savePasswordConfirm" placeholder="Password">
+                    <button id="confirmSaveBtn" class="confirm-btn">Confirm Save</button>
+                    <button id="cancelSaveBtn" class="cancel-btn">Cancel</button>
+                </div>
+                <p id="saveConfirmError" class="error-message"></p>
+            </div>
+
+            <!-- New Password Management Section -->
+            <div class="password-management-section">
+                <button id="managePasswordBtn" class="secondary-btn">Manage Password</button>
+            </div>
+            <div id="passwordManagementContainer" style="display: none;">
+                <p>Enter your current password to make changes.</p>
+                <div class="input-group">
+                    <input type="password" id="currentPassword" placeholder="Current Password">
+                </div>
+                <hr>
+                <p><strong>Set a new password (optional):</strong></p>
+                <div class="input-group">
+                    <input type="password" id="manageNewPassword" placeholder="New Password">
+                    <input type="password" id="manageConfirmPassword" placeholder="Confirm New Password">
+                </div>
+                <div class="data-management-group">
+                    <button id="confirmPasswordChangeBtn" class="confirm-btn">Save Changes</button>
+                    <button id="removePasswordBtn" class="cancel-btn">Remove Password</button>
+                </div>
+                <p id="passwordManageError" class="error-message"></p>
+            </div>
+            <!-- End New Password Management Section -->
 
             <div class="data-management-group">
                 <button id="exportSettingsBtn" class="secondary-btn">Export Settings</button>
