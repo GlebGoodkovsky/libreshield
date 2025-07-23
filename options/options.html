@@ -1,1 +1,66 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>LibreShield Settings</title><link rel="stylesheet" href="options.css"></head><body><div class="container"><h1>LibreShield Settings</h1><div class="theme-switcher-container"><span>☀️</span><label class="theme-switcher"><input type="checkbox" id="theme-toggle"><span class="slider"></span></label><span>🌙</span></div><div class="section"><h2>Block Page Message</h2><p>Customize the message shown on the block page.</p><input type="text" id="blockPageMessage" class="wide-input"></div><div class="section"><h2>Blocked Domains</h2><div class="input-group"><input type="text" id="newDomain" placeholder="example.com or multiple, separated, by, commas"><button id="addDomain">Add Domain</button></div><ul id="blockedDomainsList" class="item-list"></ul></div><div class="section"><h2>Blocked Keywords</h2><div class="input-group"><input type="text" id="newKeyword" placeholder="a bad word, or multiple, separated, by, commas"><button id="addKeyword">Add Keyword</button></div><ul id="blockedKeywordsList" class="item-list"></ul></div><div class="section"><h2>Allowed Sites</h2><div class="input-group"><input type="text" id="newAllowedSite" placeholder="google.com, or multiple, separated, by, commas"><button id="addAllowedSite">Add Allowed Site</button></div><ul id="allowedSitesList" class="item-list"></ul></div><button id="saveButton">Save Settings</button><div id="status"></div><div class="data-management-group"><button id="exportSettingsBtn" class="secondary-btn">Export Settings</button><button id="importSettingsBtn" class="secondary-btn">Import Settings</button></div></div><script src="options.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LibreShield Settings</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <div class="container">
+        <h1>LibreShield Settings</h1>
+
+        <div class="theme-switcher-container">
+            <span>☀️</span>
+            <label class="theme-switcher">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider"></span>
+            </label>
+            <span>🌙</span>
+        </div>
+
+        <div class="section">
+            <h2>Block Page Message</h2>
+            <p>Customize the message shown on the block page.</p>
+            <input type="text" id="blockPageMessage" class="wide-input">
+        </div>
+
+        <div class="section">
+            <h2>Blocked Domains</h2>
+            <div class="input-group">
+                <input type="text" id="newDomain" placeholder="example.com or multiple, separated, by, commas">
+                <button id="addDomain">Add Domain</button>
+            </div>
+            <ul id="blockedDomainsList" class="item-list"></ul>
+        </div>
+
+        <div class="section">
+            <h2>Blocked Keywords</h2>
+            <div class="input-group">
+                <input type="text" id="newKeyword" placeholder="a bad word, or multiple, separated, by, commas">
+                <button id="addKeyword">Add Keyword</button>
+            </div>
+            <ul id="blockedKeywordsList" class="item-list"></ul>
+        </div>
+
+        <div class="section">
+            <h2>Allowed Sites</h2>
+            <div class="input-group">
+                <input type="text" id="newAllowedSite" placeholder="google.com, or multiple, separated, by, commas">
+                <button id="addAllowedSite">Add Allowed Site</button>
+            </div>
+            <ul id="allowedSitesList" class="item-list"></ul>
+        </div>
+
+        <button id="saveButton">Save Settings</button>
+        <div id="status"></div>
+
+        <!-- This is the new section for Import/Export -->
+        <div class="data-management-group">
+            <button id="exportSettingsBtn" class="secondary-btn">Export Settings</button>
+            <button id="importSettingsBtn" class="secondary-btn">Import Settings</button>
+        </div>
+
+    </div>
+    <script src="options.js"></script>
+</body>
+</html>
