@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function initializeAuth() {
-        const { passwordHash } = await chrome.storage.local.get('passwordHash');
+        const { passwordHash } = await browser.storage.local.get('passwordHash');
         if (passwordHash) {
             loginContainer.style.display = 'block';
         } else {
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "WARNING: This will delete ALL your settings (blocklists, keywords, etc.) and remove the password. This cannot be undone.\n\nType 'RESET' to confirm."
         );
         if (confirmation === 'RESET') {
-            await chrome.storage.local.clear();
+            await browser.storage.local.clear();
             loginError.textContent = 'Extension has been reset. Reloading page...';
             setTimeout(() => location.reload(), 2000);
         } else {
@@ -60,14 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!newPassword || !confirmPassword) { setPasswordError.textContent = 'Both fields are required.'; return; }
         if (newPassword !== confirmPassword) { setPasswordError.textContent = 'Passwords do not match.'; return; }
         const hash = await hashPassword(newPassword);
-        await chrome.storage.local.set({ passwordHash: hash });
+        await browser.storage.local.set({ passwordHash: hash });
         showAndInitializeSettings();
     });
 
     unlockBtn.addEventListener('click', async () => {
         const enteredPassword = passwordInput.value;
         if (!enteredPassword) { loginError.textContent = 'Password is required.'; return; }
-        const { passwordHash } = await chrome.storage.local.get('passwordHash');
+        const { passwordHash } = await browser.storage.local.get('passwordHash');
         const enteredHash = await hashPassword(enteredPassword);
         if (enteredHash === passwordHash) {
             showAndInitializeSettings();
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function loadSettings() {
             const keysToGet = ['blockPageMessage', 'theme', ...listConfigurations.map(c => c.storageKey)];
-            chrome.storage.local.get(keysToGet, (data) => {
+            browser.storage.local.get(keysToGet, (data) => {
                 messageInput.value = data.blockPageMessage || "I don't need this.";
                 listConfigurations.forEach(config => {
                     config.dataArray = data[config.storageKey] || [];
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const itemsToAdd = rawInput.includes(',') ? rawInput.split(',').map(s => s.trim()).filter(Boolean) : [rawInput];
             let addedCount = 0; itemsToAdd.forEach(item => { if (!itemsArray.includes(item)) { itemsArray.push(item); addedCount++; } });
             if (addedCount > 0) {
-                const storageKey = ulElement.id.replace('List', ''); await chrome.storage.local.set({ [storageKey]: itemsArray });
+                const storageKey = ulElement.id.replace('List', ''); await browser.storage.local.set({ [storageKey]: itemsArray });
                 renderList(ulElement, itemsArray); inputElement.value = ''; statusDiv.textContent = `Added ${addedCount} new item(s).`;
             } else { statusDiv.textContent = 'Item(s) already in list.'; }
             setTimeout(() => statusDiv.textContent = '', 2000);
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const index = itemsArray.indexOf(itemToRemove);
             if (index > -1) {
                 itemsArray.splice(index, 1); const storageKey = ulElement.id.replace('List', '');
-                await chrome.storage.local.set({ [storageKey]: itemsArray });
+                await browser.storage.local.set({ [storageKey]: itemsArray });
                 renderList(ulElement, itemsArray); statusDiv.textContent = `Removed: ${itemToRemove}`;
                 setTimeout(() => statusDiv.textContent = '', 2000);
             }
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         async function exportSettings() {
             statusDiv.textContent = 'Exporting...';
             try {
-                const settingsToExport = await chrome.storage.local.get(null);
+                const settingsToExport = await browser.storage.local.get(null);
                 const jsonString = JSON.stringify(settingsToExport, null, 2);
                 const blob = new Blob([jsonString], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
@@ -177,8 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 reader.onload = readerEvent => {
                     try {
                         const importedSettings = JSON.parse(readerEvent.target.result);
-                        chrome.storage.local.set(importedSettings, () => {
-                            if (chrome.runtime.lastError) { throw new Error(chrome.runtime.lastError.message); }
+                        browser.storage.local.set(importedSettings, () => {
+                            if (browser.runtime.lastError) { throw new Error(browser.runtime.lastError.message); }
                             statusDiv.textContent = 'Settings imported! Reloading...';
                             setTimeout(() => location.reload(), 1500);
                         });
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             buttonEl.addEventListener('click', () => addItem(inputEl, config.dataArray, listEl));
             inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addItem(inputEl, config.dataArray, listEl); } });
         });
-        themeToggle.addEventListener('change', () => { const theme = themeToggle.checked ? 'dark' : 'light'; document.body.classList.toggle('dark-mode', themeToggle.checked); chrome.storage.local.set({ theme }); });
+        themeToggle.addEventListener('change', () => { const theme = themeToggle.checked ? 'dark' : 'light'; document.body.classList.toggle('dark-mode', themeToggle.checked); browser.storage.local.set({ theme }); });
         exportSettingsBtn.addEventListener('click', exportSettings);
         importSettingsBtn.addEventListener('click', importSettings);
 
@@ -202,9 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
         function resetSaveUi() { saveConfirmationContainer.style.display = 'none'; savePasswordConfirmInput.value = ''; saveConfirmError.textContent = ''; saveButton.style.display = 'block'; }
         confirmSaveBtn.addEventListener('click', async () => {
             const enteredPassword = savePasswordConfirmInput.value; if (!enteredPassword) { saveConfirmError.textContent = 'Password is required to confirm.'; return; }
-            const { passwordHash } = await chrome.storage.local.get('passwordHash'); const enteredHash = await hashPassword(enteredPassword);
+            const { passwordHash } = await browser.storage.local.get('passwordHash'); const enteredHash = await hashPassword(enteredPassword);
             if (enteredHash === passwordHash) {
-                chrome.storage.local.set({ blockPageMessage: messageInput.value }, () => { statusDiv.textContent = 'Block page message saved successfully!'; setTimeout(() => statusDiv.textContent = '', 2000); });
+                browser.storage.local.set({ blockPageMessage: messageInput.value }, () => { statusDiv.textContent = 'Block page message saved successfully!'; setTimeout(() => statusDiv.textContent = '', 2000); });
                 resetSaveUi();
             } else { saveConfirmError.textContent = 'Incorrect password. Please try again.'; savePasswordConfirmInput.value = ''; }
         });
@@ -214,21 +214,21 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmPasswordChangeBtn.addEventListener('click', async () => {
             const currentPassword = currentPasswordInput.value; const newPassword = manageNewPasswordInput.value; const confirmPassword = manageConfirmPasswordInput.value;
             passwordManageError.textContent = ''; if (!currentPassword) { passwordManageError.textContent = 'Current password is required.'; return; }
-            const { passwordHash } = await chrome.storage.local.get('passwordHash'); const currentHash = await hashPassword(currentPassword);
+            const { passwordHash } = await browser.storage.local.get('passwordHash'); const currentHash = await hashPassword(currentPassword);
             if (currentHash !== passwordHash) { passwordManageError.textContent = 'Incorrect current password.'; return; }
             if (!newPassword && !confirmPassword) { passwordManageError.textContent = 'No changes to save.'; return; }
             if (newPassword !== confirmPassword) { passwordManageError.textContent = 'New passwords do not match.'; return; }
-            const newHash = await hashPassword(newPassword); await chrome.storage.local.set({ passwordHash: newHash });
+            const newHash = await hashPassword(newPassword); await browser.storage.local.set({ passwordHash: newHash });
             statusDiv.textContent = 'Password changed successfully!'; passwordManagementContainer.style.display = 'none';
             currentPasswordInput.value = ''; manageNewPasswordInput.value = ''; manageConfirmPasswordInput.value = '';
             setTimeout(() => statusDiv.textContent = '', 3000);
         });
         removePasswordBtn.addEventListener('click', async () => {
             const currentPassword = currentPasswordInput.value; passwordManageError.textContent = ''; if (!currentPassword) { passwordManageError.textContent = 'Current password is required to remove protection.'; return; }
-            const { passwordHash } = await chrome.storage.local.get('passwordHash'); const currentHash = await hashPassword(currentPassword);
+            const { passwordHash } = await browser.storage.local.get('passwordHash'); const currentHash = await hashPassword(currentPassword);
             if (currentHash === passwordHash) {
                 if (confirm("Are you sure you want to remove password protection? Settings will be accessible to anyone with browser access.")) {
-                    await chrome.storage.local.remove('passwordHash'); statusDiv.textContent = 'Password protection removed! Reloading...'; setTimeout(() => location.reload(), 2000);
+                    await browser.storage.local.remove('passwordHash'); statusDiv.textContent = 'Password protection removed! Reloading...'; setTimeout(() => location.reload(), 2000);
                 }
             } else { passwordManageError.textContent = 'Incorrect current password.'; }
         });

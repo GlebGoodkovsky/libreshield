@@ -1,6 +1,6 @@
 // File: content.js (Verified to respect Allowlist Precedence)
 
-chrome.storage.local.get(
+browser.storage.local.get(
     ['isBlockingEnabled', 'blockedKeywords', 'allowedSites'],
     (settings) => {
         // --- Step 1: Perform initial checks for power and keywords ---
@@ -30,7 +30,7 @@ chrome.storage.local.get(
             for (const keyword of settings.blockedKeywords) {
                 if (keyword && pageText.includes(keyword.toLowerCase())) {
                     window.stop();
-                    chrome.runtime.sendMessage({
+                    browser.runtime.sendMessage({
                         action: 'blockPageByKeyword',
                         keyword: `Content Keyword: "${keyword}"`
                     });
