@@ -1,0 +1,6 @@
+# VS Codium / VS Code editor settings
+.vscode/
+
+# System files
+.DS_Store
+Thumbs.db

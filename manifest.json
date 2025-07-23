@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "LibreShield",
+  "version": "1.0.0",
+  "description": "A powerful, private, and fully-free content blocker.",
+  "permissions": [
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_start",
+      "match_about_blank": true,
+      "all_frames": true
+    }
+  ],
+  "action": {
+    "default_icon": "icons/icon_48.png",
+    "default_popup": "popup/popup.html"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "web_accessible_resources": [
+    {
+        "resources": ["block_page/block.html"],
+        "matches": ["<all_urls>"]
+    }
+  ]
+}
