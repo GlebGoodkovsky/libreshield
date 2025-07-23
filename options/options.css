@@ -130,3 +130,79 @@ textarea { min-height: 150px; font-family: monospace; resize: vertical; }
     background-color: var(--button-background);
     color: #fff;
 }
+
+/* --- New Authentication Styles --- */
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto; /* Add some vertical margin */
+    text-align: center;
+}
+
+.auth-container input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background-color: var(--card-background);
+    color: var(--text-color);
+}
+
+.auth-container button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: var(--button-background);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.auth-container button:hover {
+    background-color: var(--button-hover-background);
+}
+
+.error-message {
+    color: #e74c3c;
+    font-weight: bold;
+    height: 20px; /* Reserve space to prevent layout shift */
+    margin-top: 10px;
+}
+
+
+/* --- New Save Confirmation Styles --- */
+#saveConfirmationContainer {
+    margin-top: 15px;
+    padding: 15px;
+    border: 1px dashed var(--border-color);
+    border-radius: 5px;
+}
+
+#saveConfirmationContainer .input-group {
+    margin-top: 10px;
+}
+
+#saveConfirmationContainer .error-message {
+    margin-top: 10px;
+}
+
+.confirm-btn {
+    background-color: #28a745; /* Green for confirm */
+}
+
+.confirm-btn:hover {
+    background-color: #218838;
+}
+
+.cancel-btn {
+    background-color: #6c757d; /* Gray for cancel */
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268;
+}
