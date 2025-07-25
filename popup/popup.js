@@ -44,9 +44,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function l(e, t) {
-        "blockedDomains" === e ? (c.blockedDomains.push(t), c.allowedSites = c.allowedSites.filter(e => e !== t)) : "allowedSites" === e && (c.allowedSites.push(t), c.blockedDomains = c.blockedDomains.filter(e => e !== t)),
-        await browser.storage.local.set(c),
-        s()
+        try {
+            if ("blockedDomains" === e) {
+                c.blockedDomains.push(t);
+                c.allowedSites = c.allowedSites.filter(site => site !== t);
+            } else if ("allowedSites" === e) {
+                c.allowedSites.push(t);
+                c.blockedDomains = c.blockedDomains.filter(site => site !== t);
+            }
+            await browser.storage.local.set(c);
+            s();
+        } catch (error) {
+            console.error('Storage error:', error);
+            alert('Failed to save settings. Browser storage may be full.');
+        }
     }
     d.addEventListener("change", () => {
         c.isBlockingEnabled = d.checked,

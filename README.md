@@ -95,7 +95,7 @@ The extension icon should now appear in your browser's toolbar. Note that tempor
 
 ## 🤝 Contributing
 
-Suggestions, bug reports, and pull requests are warmly welcome! Please feel free to open an issue to discuss features or submit changes.
+Suggestions, bug reports, and pull requests are warmly welcome! Please feel free to open an issue to discuss features or submit changes
 
 ---
 

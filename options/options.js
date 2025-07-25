@@ -1,3 +1,8 @@
+let loginAttempts = 0;
+let lockoutUntil = 0;
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_TIME = 300000; // 5 minutes
+
 // File: options.js (Corrected Version)
 document.addEventListener('DOMContentLoaded', () => {
     // --- Element References ---
@@ -15,14 +20,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Core Authentication Logic ---
 
-    async function hashPassword(password) {
+
+
+
+
+
+
+
+    async function hashPassword(password, existingSalt = null) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password);
-        // THE FIX IS HERE: Changed 'SHA-265' to the correct 'SHA-256'
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        
+        // Generate or use existing salt
+        const salt = existingSalt || crypto.getRandomValues(new Uint8Array(16));
+        
+        // Use PBKDF2 with 100,000 iterations
+        const key = await crypto.subtle.importKey(
+            'raw', data, { name: 'PBKDF2' }, false, ['deriveBits']
+        );
+        
+        const hashBuffer = await crypto.subtle.deriveBits(
+            {
+                name: 'PBKDF2',
+                salt: salt,
+                iterations: 100000,
+                hash: 'SHA-256'
+            },
+            key,
+            256
+        );
+        
         const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        const saltArray = Array.from(salt);
+        
+        return {
+            hash: hashArray.map(b => b.toString(16).padStart(2, '0')).join(''),
+            salt: saltArray.map(b => b.toString(16).padStart(2, '0')).join('')
+        };
     }
+
+
+
+
+
+
+
+
+
 
     function showAndInitializeSettings() {
         setPasswordContainer.style.display = 'none';
@@ -59,23 +103,62 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmPassword = confirmPasswordInput.value;
         if (!newPassword || !confirmPassword) { setPasswordError.textContent = 'Both fields are required.'; return; }
         if (newPassword !== confirmPassword) { setPasswordError.textContent = 'Passwords do not match.'; return; }
-        const hash = await hashPassword(newPassword);
-        await browser.storage.local.set({ passwordHash: hash });
+        const hashData = await hashPassword(newPassword);
+        await browser.storage.local.set({ 
+            passwordHash: hashData.hash,
+            passwordSalt: hashData.salt 
+        });
         showAndInitializeSettings();
     });
 
+
+
+
+
+
+
+
     unlockBtn.addEventListener('click', async () => {
+        if (Date.now() < lockoutUntil) {
+            const remaining = Math.ceil((lockoutUntil - Date.now()) / 60000);
+            loginError.textContent = `Too many attempts. Try again in ${remaining} minutes.`;
+            return;
+        }
+        
         const enteredPassword = passwordInput.value;
-        if (!enteredPassword) { loginError.textContent = 'Password is required.'; return; }
-        const { passwordHash } = await browser.storage.local.get('passwordHash');
-        const enteredHash = await hashPassword(enteredPassword);
-        if (enteredHash === passwordHash) {
+        if (!enteredPassword) { 
+            loginError.textContent = 'Password is required.'; 
+            return; 
+        }
+        
+        const { passwordHash, passwordSalt } = await browser.storage.local.get(['passwordHash', 'passwordSalt']);
+        let salt = null;
+        if (passwordSalt) {
+            salt = new Uint8Array(passwordSalt.match(/.{2}/g).map(byte => parseInt(byte, 16)));
+        }
+        const enteredHashData = await hashPassword(enteredPassword, salt);
+        if (enteredHashData.hash === passwordHash) {
+            loginAttempts = 0;
             showAndInitializeSettings();
         } else {
-            loginError.textContent = 'Incorrect password.';
+            loginAttempts++;
+            if (loginAttempts >= MAX_ATTEMPTS) {
+                lockoutUntil = Date.now() + LOCKOUT_TIME;
+                loginError.textContent = `Too many attempts. Locked for 5 minutes.`;
+            } else {
+                loginError.textContent = `Incorrect password. ${MAX_ATTEMPTS - loginAttempts} attempts remaining.`;
+            }
             passwordInput.value = '';
         }
     });
+
+
+
+
+
+
+
+
     passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlockBtn.click(); });
     forgotPasswordLink.addEventListener('click', (e) => { e.preventDefault(); resetAllSettings(); });
 
@@ -202,33 +285,57 @@ document.addEventListener('DOMContentLoaded', () => {
         function resetSaveUi() { saveConfirmationContainer.style.display = 'none'; savePasswordConfirmInput.value = ''; saveConfirmError.textContent = ''; saveButton.style.display = 'block'; }
         confirmSaveBtn.addEventListener('click', async () => {
             const enteredPassword = savePasswordConfirmInput.value; if (!enteredPassword) { saveConfirmError.textContent = 'Password is required to confirm.'; return; }
-            const { passwordHash } = await browser.storage.local.get('passwordHash'); const enteredHash = await hashPassword(enteredPassword);
-            if (enteredHash === passwordHash) {
+            
+            const { passwordHash, passwordSalt } = await browser.storage.local.get(['passwordHash', 'passwordSalt']);
+let salt = null;
+if (passwordSalt) {
+    salt = new Uint8Array(passwordSalt.match(/.{2}/g).map(byte => parseInt(byte, 16)));
+}
+const enteredHashData = await hashPassword(enteredPassword, salt);
+if (enteredHashData.hash === passwordHash) {
+
                 browser.storage.local.set({ blockPageMessage: messageInput.value }, () => { statusDiv.textContent = 'Block page message saved successfully!'; setTimeout(() => statusDiv.textContent = '', 2000); });
                 resetSaveUi();
             } else { saveConfirmError.textContent = 'Incorrect password. Please try again.'; savePasswordConfirmInput.value = ''; }
         });
         cancelSaveBtn.addEventListener('click', () => { resetSaveUi(); });
 
-        managePasswordBtn.addEventListener('click', () => { const isVisible = passwordManagementContainer.style.display === 'block'; passwordManagementContainer.style.display = isVisible ? 'none' : 'block'; });
+        managePasswordBtn.addEventListener('click', () => { 
+            const isVisible = passwordManagementContainer.style.display === 'block'; passwordManagementContainer.style.display = isVisible ? 'none' : 'block'; });
         confirmPasswordChangeBtn.addEventListener('click', async () => {
-            const currentPassword = currentPasswordInput.value; const newPassword = manageNewPasswordInput.value; const confirmPassword = manageConfirmPasswordInput.value;
+            const currentPassword = currentPasswordInput.value; 
+            const newPassword = manageNewPasswordInput.value; 
+            const confirmPassword = manageConfirmPasswordInput.value;
             passwordManageError.textContent = ''; if (!currentPassword) { passwordManageError.textContent = 'Current password is required.'; return; }
-            const { passwordHash } = await browser.storage.local.get('passwordHash'); const currentHash = await hashPassword(currentPassword);
-            if (currentHash !== passwordHash) { passwordManageError.textContent = 'Incorrect current password.'; return; }
+            const { passwordHash, passwordSalt } = await browser.storage.local.get(['passwordHash', 'passwordSalt']);
+            let salt = null;
+            if (passwordSalt) {
+                salt = new Uint8Array(passwordSalt.match(/.{2}/g).map(byte => parseInt(byte, 16)));
+            }
+            const currentHashData = await hashPassword(currentPassword, salt);
+            if (currentHashData.hash !== passwordHash) { passwordManageError.textContent = 'Incorrect current password.'; return; }
             if (!newPassword && !confirmPassword) { passwordManageError.textContent = 'No changes to save.'; return; }
             if (newPassword !== confirmPassword) { passwordManageError.textContent = 'New passwords do not match.'; return; }
-            const newHash = await hashPassword(newPassword); await browser.storage.local.set({ passwordHash: newHash });
+            const newHashData = await hashPassword(newPassword);
+            await browser.storage.local.set({ 
+                passwordHash: newHashData.hash,
+                passwordSalt: newHashData.salt 
+            });
             statusDiv.textContent = 'Password changed successfully!'; passwordManagementContainer.style.display = 'none';
             currentPasswordInput.value = ''; manageNewPasswordInput.value = ''; manageConfirmPasswordInput.value = '';
             setTimeout(() => statusDiv.textContent = '', 3000);
         });
         removePasswordBtn.addEventListener('click', async () => {
             const currentPassword = currentPasswordInput.value; passwordManageError.textContent = ''; if (!currentPassword) { passwordManageError.textContent = 'Current password is required to remove protection.'; return; }
-            const { passwordHash } = await browser.storage.local.get('passwordHash'); const currentHash = await hashPassword(currentPassword);
-            if (currentHash === passwordHash) {
+            const { passwordHash, passwordSalt } = await browser.storage.local.get(['passwordHash', 'passwordSalt']);
+            let salt = null;
+            if (passwordSalt) {
+                salt = new Uint8Array(passwordSalt.match(/.{2}/g).map(byte => parseInt(byte, 16)));
+            }
+            const currentHashData = await hashPassword(currentPassword, salt);
+            if (currentHashData.hash === passwordHash) {
                 if (confirm("Are you sure you want to remove password protection? Settings will be accessible to anyone with browser access.")) {
-                    await browser.storage.local.remove('passwordHash'); statusDiv.textContent = 'Password protection removed! Reloading...'; setTimeout(() => location.reload(), 2000);
+                    await browser.storage.local.remove(['passwordHash', 'passwordSalt']); statusDiv.textContent = 'Password protection removed! Reloading...'; setTimeout(() => location.reload(), 2000);
                 }
             } else { passwordManageError.textContent = 'Incorrect current password.'; }
         });

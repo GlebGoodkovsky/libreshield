@@ -17,8 +17,11 @@ async function blockRequestHandler(details) {
     const { blockedDomains, allowedSites } = await browser.storage.local.get(['blockedDomains', 'allowedSites']);
     const domain = new URL(details.url).hostname;
 
-    if (allowedSites && allowedSites.some(allowed => domain.includes(allowed))) return { cancel: false };
-    if (blockedDomains && blockedDomains.some(blocked => domain.includes(blocked))) {
+    if (allowedSites && allowedSites.some(allowed =>
+      domain === allowed || domain.endsWith('.' + allowed))) return { cancel: false };
+      
+    if (blockedDomains && blockedDomains.some(blocked => 
+      domain === blocked || domain.endsWith('.' + blocked))) {    
       const blockPageUrl = browser.runtime.getURL('block_page/block.html');
       return { redirectUrl: `${blockPageUrl}?reason=${encodeURIComponent(`Blocked Domain: ${domain}`)}` };
     }
