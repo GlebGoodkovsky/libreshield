@@ -31,8 +31,19 @@ async function blockRequestHandler(details) {
 browser.webRequest.onBeforeRequest.addListener(blockRequestHandler, { urls: ["<all_urls>"], types: ["main_frame", "sub_frame"] }, ["blocking"]);
 
 browser.runtime.onMessage.addListener((message, sender) => {
+    // Security Check: Only accept messages from our own extension.
+    // This prevents malicious websites from triggering actions.
+    if (sender.id !== browser.runtime.id) {
+        return; 
+    }
+
     if (message.action === 'blockPageByKeyword') {
         const blockPageUrl = browser.runtime.getURL('block_page/block.html');
-        browser.tabs.update(sender.tab.id, { url: `${blockPageUrl}?reason=${encodeURIComponent(message.keyword)}` });
+        // Use a try-catch block in case the tab was closed before the update.
+        try {
+            browser.tabs.update(sender.tab.id, { url: `${blockPageUrl}?reason=${encodeURIComponent(message.keyword)}` });
+        } catch (error) {
+            console.error(`Failed to redirect tab: ${error.message}`);
+        }
     }
 });

@@ -283,21 +283,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
         saveButton.addEventListener('click', () => { saveConfirmationContainer.style.display = 'block'; saveButton.style.display = 'none'; statusDiv.textContent = ''; });
         function resetSaveUi() { saveConfirmationContainer.style.display = 'none'; savePasswordConfirmInput.value = ''; saveConfirmError.textContent = ''; saveButton.style.display = 'block'; }
-        confirmSaveBtn.addEventListener('click', async () => {
-            const enteredPassword = savePasswordConfirmInput.value; if (!enteredPassword) { saveConfirmError.textContent = 'Password is required to confirm.'; return; }
-            
-            const { passwordHash, passwordSalt } = await browser.storage.local.get(['passwordHash', 'passwordSalt']);
-let salt = null;
-if (passwordSalt) {
-    salt = new Uint8Array(passwordSalt.match(/.{2}/g).map(byte => parseInt(byte, 16)));
-}
-const enteredHashData = await hashPassword(enteredPassword, salt);
-if (enteredHashData.hash === passwordHash) {
+        
 
-                browser.storage.local.set({ blockPageMessage: messageInput.value }, () => { statusDiv.textContent = 'Block page message saved successfully!'; setTimeout(() => statusDiv.textContent = '', 2000); });
+
+
+
+        confirmSaveBtn.addEventListener('click', async () => {
+            const enteredPassword = savePasswordConfirmInput.value;
+            if (!enteredPassword) {
+                saveConfirmError.textContent = 'Password is required to confirm.';
+                return;
+            }
+        
+            // This logic correctly verifies the entered password against the stored hash and salt.
+            const { passwordHash, passwordSalt } = await browser.storage.local.get(['passwordHash', 'passwordSalt']);
+            const saltBytes = passwordSalt ? new Uint8Array(passwordSalt.match(/.{2}/g).map(byte => parseInt(byte, 16))) : null;
+            const enteredHashData = await hashPassword(enteredPassword, saltBytes);
+        
+            // Check if the password is correct
+            if (enteredHashData.hash === passwordHash) {
+                // 1. Save the new message to storage
+                await browser.storage.local.set({ blockPageMessage: messageInput.value });
+        
+                // 2. Show a success message
+                statusDiv.textContent = 'Settings saved successfully!';
+                setTimeout(() => { statusDiv.textContent = ''; }, 2000);
+                
+                // 3. Hide the password confirmation UI
                 resetSaveUi();
-            } else { saveConfirmError.textContent = 'Incorrect password. Please try again.'; savePasswordConfirmInput.value = ''; }
+        
+                // 4. *** THIS IS THE FIX ***
+                // Reload all settings from storage to make sure the page shows the latest saved data.
+                loadSettings();
+        
+            } else {
+                // Handle incorrect password
+                saveConfirmError.textContent = 'Incorrect password. Please try again.';
+                savePasswordConfirmInput.value = '';
+            }
         });
+
+
+
         cancelSaveBtn.addEventListener('click', () => { resetSaveUi(); });
 
         managePasswordBtn.addEventListener('click', () => { 
