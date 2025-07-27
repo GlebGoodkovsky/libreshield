@@ -1,1 +1,113 @@
 html,body{margin:0;padding:0;width:100%;height:100%;background-color:#1a1a1a;color:#e0e0e0;font-family:sans-serif;display:flex;justify-content:center;align-items:center;text-align:center}.content{max-width:80%}h1{font-size:4em;font-weight:700;margin-bottom:20px}p{font-size:1.2em;color:#888}
+
+/* NEW: Temporary Unblock Section Styles */
+.temp-unblock-section {
+    margin-top: 40px;
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.temp-unblock-section h3 {
+    color: #4CAF50;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.temp-unblock-section p {
+    font-size: 1em;
+    color: #bbb;
+    margin-bottom: 20px;
+}
+
+.temp-unblock-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+#tempMinutes {
+    padding: 10px 15px;
+    font-size: 1.1em;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+    width: 80px;
+    text-align: center;
+}
+
+#tempMinutes:focus {
+    outline: none;
+    border-color: #66BB6A;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+#requestTempUnblock {
+    padding: 12px 20px;
+    font-size: 1.1em;
+    font-weight: bold;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#requestTempUnblock:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+#requestTempUnblock:active {
+    transform: translateY(0);
+}
+
+#requestTempUnblock:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+#tempUnblockStatus {
+    font-size: 0.9em;
+    font-weight: bold;
+    min-height: 20px;
+    margin-top: 10px;
+}
+
+#tempUnblockStatus.success {
+    color: #4CAF50;
+}
+
+#tempUnblockStatus.error {
+    color: #f44336;
+}
+
+#tempUnblockStatus.info {
+    color: #2196F3;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 480px) {
+    .temp-unblock-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    #tempMinutes {
+        width: 120px;
+    }
+    
+    #requestTempUnblock {
+        width: 100%;
+        max-width: 250px;
+    }
+}

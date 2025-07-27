@@ -1,4 +1,4 @@
-// File: content.js (Verified to respect Allowlist Precedence)
+// File: content.js - Updated with Temporary Unblock Support
 
 browser.storage.local.get(
     ['isBlockingEnabled', 'blockedKeywords', 'allowedSites'],
@@ -22,12 +22,29 @@ browser.storage.local.get(
             return; // <-- THIS IS THE FIX.
         }
 
+        // NEW: Function to check if keyword is temporarily unblocked
+        async function isKeywordTempUnblocked(keyword) {
+            try {
+                const response = await browser.runtime.sendMessage({
+                    action: 'getTempUnblocks'
+                });
+                
+                if (response.success) {
+                    const now = Date.now();
+                    return response.tempUnblocks.some(item => 
+                        item.type === 'keyword' && 
+                        item.value.toLowerCase() === keyword.toLowerCase() &&
+                        item.expiresAt > now
+                    );
+                }
+                return false;
+            } catch (error) {
+                console.error('LibreShield: Error checking temp unblocks:', error);
+                return false;
+            }
+        }
 
-
-
-
-
-        const findBlockedKeywords = () => {
+        const findBlockedKeywords = async () => {
             if (!document.body) return false;
         
             // Use textContent instead of innerText for better performance
@@ -40,6 +57,12 @@ browser.storage.local.get(
                     const regex = new RegExp(`\\b${escaped}\\b`);
                     
                     if (regex.test(pageText)) {
+                        // NEW: Check if this keyword is temporarily unblocked
+                        if (await isKeywordTempUnblocked(keyword)) {
+                            console.log(`LibreShield: Keyword "${keyword}" is temporarily unblocked, skipping block`);
+                            continue; // Skip this keyword and check the next one
+                        }
+                        
                         window.stop();
                         browser.runtime.sendMessage({
                             action: 'blockPageByKeyword',
@@ -52,28 +75,25 @@ browser.storage.local.get(
             return false;
         };
 
+        // REPLACE WITH:
+        const observer = new MutationObserver(() => {
+            findBlockedKeywords().then(blocked => {
+                if (blocked) {
+                    observer.disconnect();
+                }
+            });
+        });
 
+        // Only start observing after DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                observer.observe(document.body, { childList: true, subtree: true });
+            });
+        } else {
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
 
-
-
-// REPLACE WITH:
-const observer = new MutationObserver(() => {
-    if (findBlockedKeywords()) {
-        observer.disconnect();
-    }
-});
-
-// Only start observing after DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        observer.observe(document.body, { childList: true, subtree: true });
-    });
-} else {
-    observer.observe(document.body, { childList: true, subtree: true });
-}
-
-// Also run initial check
-findBlockedKeywords();
-
+        // Also run initial check
+        findBlockedKeywords();
     }
 );

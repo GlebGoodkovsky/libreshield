@@ -3,7 +3,10 @@ let lockoutUntil = 0;
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_TIME = 300000; // 5 minutes
 
-// File: options.js (Corrected Version)
+// NEW: Variable to track temporary unblocks refresh interval
+let tempUnblocksRefreshInterval = null;
+
+// File: options.js (Updated with Temporary Unblocks Feature)
 document.addEventListener('DOMContentLoaded', () => {
     // --- Element References ---
     const setPasswordContainer = document.getElementById('setPasswordContainer');
@@ -19,14 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const forgotPasswordLink = document.getElementById('forgotPasswordLink');
 
     // --- Core Authentication Logic ---
-
-
-
-
-
-
-
-
     async function hashPassword(password, existingSalt = null) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password);
@@ -58,15 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             salt: saltArray.map(b => b.toString(16).padStart(2, '0')).join('')
         };
     }
-
-
-
-
-
-
-
-
-
 
     function showAndInitializeSettings() {
         setPasswordContainer.style.display = 'none';
@@ -111,13 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showAndInitializeSettings();
     });
 
-
-
-
-
-
-
-
     unlockBtn.addEventListener('click', async () => {
         if (Date.now() < lockoutUntil) {
             const remaining = Math.ceil((lockoutUntil - Date.now()) / 60000);
@@ -152,13 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-
-
-
-
-
-
     passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlockBtn.click(); });
     forgotPasswordLink.addEventListener('click', (e) => { e.preventDefault(); resetAllSettings(); });
 
@@ -183,6 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const confirmPasswordChangeBtn = document.getElementById('confirmPasswordChangeBtn');
         const removePasswordBtn = document.getElementById('removePasswordBtn');
         const passwordManageError = document.getElementById('passwordManageError');
+        
+        // NEW: Temporary unblocks elements
+        const tempUnblocksList = document.getElementById('tempUnblocksList');
+        const refreshTempUnblocksBtn = document.getElementById('refreshTempUnblocks');
 
         const listConfigurations = [
             { listId: 'blockedDomainsList', inputId: 'newDomain', buttonId: 'addDomain', storageKey: 'blockedDomains', dataArray: [] },
@@ -203,6 +179,121 @@ document.addEventListener('DOMContentLoaded', () => {
                     themeToggle.checked = true;
                 }
             });
+            
+            // NEW: Load temporary unblocks
+            loadTempUnblocks();
+        }
+
+        // NEW: Function to load and display temporary unblocks
+        async function loadTempUnblocks() {
+            try {
+                const response = await browser.runtime.sendMessage({ action: 'getTempUnblocks' });
+                if (response.success) {
+                    renderTempUnblocks(response.tempUnblocks);
+                } else {
+                    console.error('Failed to load temp unblocks:', response.error);
+                    renderTempUnblocks([]);
+                }
+            } catch (error) {
+                console.error('Error loading temp unblocks:', error);
+                renderTempUnblocks([]);
+            }
+        }
+
+        // NEW: Function to render temporary unblocks list
+        function renderTempUnblocks(tempUnblocks) {
+            tempUnblocksList.innerHTML = '';
+            
+            if (!tempUnblocks || tempUnblocks.length === 0) {
+                const li = document.createElement('li');
+                li.classList.add('no-items');
+                li.textContent = 'No active temporary unblocks.';
+                tempUnblocksList.appendChild(li);
+                return;
+            }
+
+            tempUnblocks.forEach(unblock => {
+                const li = document.createElement('li');
+                
+                const now = Date.now();
+                const timeRemaining = Math.max(0, unblock.expiresAt - now);
+                const totalDuration = unblock.expiresAt - unblock.createdAt;
+                const progress = Math.max(0, Math.min(100, ((totalDuration - timeRemaining) / totalDuration) * 100));
+                
+                const minutesRemaining = Math.ceil(timeRemaining / (60 * 1000));
+                const hoursRemaining = Math.floor(minutesRemaining / 60);
+                const displayMinutes = minutesRemaining % 60;
+                
+                let timeDisplay;
+                if (hoursRemaining > 0) {
+                    timeDisplay = `${hoursRemaining}h ${displayMinutes}m`;
+                } else {
+                    timeDisplay = `${minutesRemaining}m`;
+                }
+
+                li.innerHTML = `
+                    <div class="temp-unblock-header">
+                        <div class="temp-unblock-title">${unblock.value}</div>
+                        <div class="temp-unblock-type">${unblock.type}</div>
+                    </div>
+                    <div class="temp-unblock-details">
+                        <div class="temp-unblock-time">
+                            <div>Duration: ${unblock.duration} minutes</div>
+                            <div>Remaining: <span class="temp-unblock-countdown">${timeDisplay}</span></div>
+                        </div>
+                        <div class="temp-unblock-actions">
+                            <button class="temp-unblock-remove-btn" data-id="${unblock.id}">Remove</button>
+                        </div>
+                    </div>
+                    <div class="temp-unblock-progress">
+                        <div class="temp-unblock-progress-bar" style="width: ${progress}%"></div>
+                    </div>
+                `;
+                
+                tempUnblocksList.appendChild(li);
+            });
+
+            // Add event listeners for remove buttons
+            tempUnblocksList.querySelectorAll('.temp-unblock-remove-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    await removeTempUnblock(id);
+                });
+            });
+        }
+
+        // NEW: Function to remove a temporary unblock
+        async function removeTempUnblock(id) {
+            try {
+                const response = await browser.runtime.sendMessage({ 
+                    action: 'removeTempUnblock', 
+                    id: id 
+                });
+                
+                if (response.success) {
+                    statusDiv.textContent = 'Temporary unblock removed successfully.';
+                    setTimeout(() => statusDiv.textContent = '', 2000);
+                    loadTempUnblocks(); // Refresh the list
+                } else {
+                    statusDiv.textContent = 'Failed to remove temporary unblock.';
+                    setTimeout(() => statusDiv.textContent = '', 3000);
+                }
+            } catch (error) {
+                console.error('Error removing temp unblock:', error);
+                statusDiv.textContent = 'Error removing temporary unblock.';
+                setTimeout(() => statusDiv.textContent = '', 3000);
+            }
+        }
+
+        // NEW: Auto-refresh temporary unblocks every minute
+        function startTempUnblocksAutoRefresh() {
+            if (tempUnblocksRefreshInterval) {
+                clearInterval(tempUnblocksRefreshInterval);
+            }
+            
+            tempUnblocksRefreshInterval = setInterval(() => {
+                loadTempUnblocks();
+            }, 60000); // Refresh every minute
         }
 
         function renderList(ulElement, itemsArray) {
@@ -277,17 +368,17 @@ document.addEventListener('DOMContentLoaded', () => {
             buttonEl.addEventListener('click', () => addItem(inputEl, config.dataArray, listEl));
             inputEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addItem(inputEl, config.dataArray, listEl); } });
         });
+        
         themeToggle.addEventListener('change', () => { const theme = themeToggle.checked ? 'dark' : 'light'; document.body.classList.toggle('dark-mode', themeToggle.checked); browser.storage.local.set({ theme }); });
         exportSettingsBtn.addEventListener('click', exportSettings);
         importSettingsBtn.addEventListener('click', importSettings);
 
+        // NEW: Temporary unblocks event listeners
+        refreshTempUnblocksBtn.addEventListener('click', loadTempUnblocks);
+
         saveButton.addEventListener('click', () => { saveConfirmationContainer.style.display = 'block'; saveButton.style.display = 'none'; statusDiv.textContent = ''; });
         function resetSaveUi() { saveConfirmationContainer.style.display = 'none'; savePasswordConfirmInput.value = ''; saveConfirmError.textContent = ''; saveButton.style.display = 'block'; }
         
-
-
-
-
         confirmSaveBtn.addEventListener('click', async () => {
             const enteredPassword = savePasswordConfirmInput.value;
             if (!enteredPassword) {
@@ -322,8 +413,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 savePasswordConfirmInput.value = '';
             }
         });
-
-
 
         cancelSaveBtn.addEventListener('click', () => { resetSaveUi(); });
 
@@ -366,6 +455,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } else { passwordManageError.textContent = 'Incorrect current password.'; }
         });
+
+        // NEW: Start auto-refresh for temporary unblocks
+        startTempUnblocksAutoRefresh();
 
         loadSettings();
     }
