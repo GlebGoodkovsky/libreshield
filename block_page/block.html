@@ -1,28 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Page Blocked</title>
-    <link rel="stylesheet" href="block.css">
+  <meta charset="UTF-8">
+  <title>Page Blocked</title>
+  <link rel="stylesheet" href="block.css">
 </head>
 <body>
-    <div class="content">
-        <h1 id="blockMessage"></h1>
-        <p id="blockReason"></p>
-        
-        <!-- NEW: Temporary Unblock Section -->
-        <div id="tempUnblockSection" class="temp-unblock-section">
-            <h3>Request Temporary Access</h3>
-            <p>Allow access to this site for a limited time:</p>
-            <div class="temp-unblock-controls">
-                <input type="number" id="tempMinutes" min="1" max="1440" value="15" placeholder="Minutes">
-                <button id="requestTempUnblock">Allow for <span id="minutesDisplay">15</span> minutes</button>
-            </div>
-            <div id="tempUnblockStatus"></div>
-        </div>
-    </div>
+  <div class="content">
+    <h1 id="blockMessage"></h1>
+    <p id="blockReason"></p>
 
-    <script src="../scripts/browser-polyfill.min.js"></script>
-    <script src="block.js"></script>
+    <!-- Temporary Unblock Section -->
+    <div id="tempUnblockSection" class="temp-unblock-section">
+      <h3>Request Temporary Access</h3>
+      <p>Allow access to this site for a limited time:</p>
+
+      <div class="temp-unblock-controls">
+        <input type="number" id="tempMinutes" min="1" max="1440" value="15" placeholder="Minutes">
+        <button id="requestTempUnblock">Allow for <span id="minutesDisplay">15</span> minutes</button>
+      </div>
+
+      <div id="passwordContainer" style="display:none; margin-top:15px;">
+        <input type="password" id="tempPassword" placeholder="Enter password"
+               style="padding:10px; font-size:1em; border:2px solid #e74c3c;
+                      border-radius:8px; background:rgba(255,255,255,.1); color:#e0e0e0;">
+      </div>
+
+      <div id="tempUnblockStatus"></div>
+    </div>
+  </div>
+
+  <script src="../scripts/browser-polyfill.min.js"></script>
+  <script src="block.js"></script>
 </body>
 </html>
