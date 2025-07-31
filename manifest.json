@@ -1,11 +1,12 @@
 {
   "manifest_version": 3,
   "name": "LibreShield",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A powerful, private, and fully-free content blocker.",
   "permissions": [
     "storage",
     "webRequest",
+    "webRequestBlocking",
     "tabs"
   ],
   "host_permissions": [
