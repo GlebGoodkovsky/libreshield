@@ -200,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // NEW: Function to render temporary unblocks list
         function renderTempUnblocks(tempUnblocks) {
             tempUnblocksList.innerHTML = '';
             
@@ -231,24 +230,62 @@ document.addEventListener('DOMContentLoaded', () => {
                     timeDisplay = `${minutesRemaining}m`;
                 }
 
-                li.innerHTML = `
-                    <div class="temp-unblock-header">
-                        <div class="temp-unblock-title">${unblock.value}</div>
-                        <div class="temp-unblock-type">${unblock.type}</div>
-                    </div>
-                    <div class="temp-unblock-details">
-                        <div class="temp-unblock-time">
-                            <div>Duration: ${unblock.duration} minutes</div>
-                            <div>Remaining: <span class="temp-unblock-countdown">${timeDisplay}</span></div>
-                        </div>
-                        <div class="temp-unblock-actions">
-                            <button class="temp-unblock-remove-btn" data-id="${unblock.id}">Remove</button>
-                        </div>
-                    </div>
-                    <div class="temp-unblock-progress">
-                        <div class="temp-unblock-progress-bar" style="width: ${progress}%"></div>
-                    </div>
-                `;
+                // Header
+                const header = document.createElement('div');
+                header.className = 'temp-unblock-header';
+                
+                const title = document.createElement('div');
+                title.className = 'temp-unblock-title';
+                title.textContent = unblock.value;
+                header.appendChild(title);
+
+                const type = document.createElement('div');
+                type.className = 'temp-unblock-type';
+                type.textContent = unblock.type;
+                header.appendChild(type);
+
+                // Details
+                const details = document.createElement('div');
+                details.className = 'temp-unblock-details';
+
+                const timeContainer = document.createElement('div');
+                timeContainer.className = 'temp-unblock-time';
+                
+                const durationDiv = document.createElement('div');
+                durationDiv.textContent = `Duration: ${unblock.duration} minutes`;
+                timeContainer.appendChild(durationDiv);
+                
+                const remainingDiv = document.createElement('div');
+                remainingDiv.textContent = `Remaining: `;
+                const countdownSpan = document.createElement('span');
+                countdownSpan.className = 'temp-unblock-countdown';
+                countdownSpan.textContent = timeDisplay;
+                remainingDiv.appendChild(countdownSpan);
+                timeContainer.appendChild(remainingDiv);
+                details.appendChild(timeContainer);
+
+                // Actions
+                const actions = document.createElement('div');
+                actions.className = 'temp-unblock-actions';
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'temp-unblock-remove-btn';
+                removeBtn.dataset.id = unblock.id; // Use dataset for custom attributes
+                removeBtn.textContent = 'Remove';
+                actions.appendChild(removeBtn);
+                details.appendChild(actions);
+
+                // Progress Bar
+                const progressContainer = document.createElement('div');
+                progressContainer.className = 'temp-unblock-progress';
+                const progressBar = document.createElement('div');
+                progressBar.className = 'temp-unblock-progress-bar';
+                progressBar.style.width = `${progress}%`;
+                progressContainer.appendChild(progressBar);
+
+                // Append all to the list item
+                li.appendChild(header);
+                li.appendChild(details);
+                li.appendChild(progressContainer);
                 
                 tempUnblocksList.appendChild(li);
             });
