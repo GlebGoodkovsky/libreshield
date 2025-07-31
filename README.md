@@ -1,6 +1,6 @@
 # LibreShield 🛡️
 
-A powerful, private, and fully-free content blocker designed as a browser extension. Take control of your browsing experience by blocking unwanted domains and keywords, all while safeguarding your settings with a password.
+A powerful, private, and fully-free content blocker designed as a browser extension. Take control of your browsing experience by blocking unwanted domains, filtering content by keywords, and safeguarding your settings with a robust password system.
 
 ---
 
@@ -8,88 +8,98 @@ A powerful, private, and fully-free content blocker designed as a browser extens
 
 ### Data Handling & Security
 
-LibreShield stores all your settings, including blocked domains, keywords, and your password hash, directly in your browser's chrome.storage.local (or browser.storage.local for Firefox).
+LibreShield is built with privacy as a core principle. All your settings are stored locally in your browser's own secure storage.
 
-- **Password Protection:** Your settings are secured by a password, which is stored as a SHA-256 hash. This prevents casual unauthorized access to your blocklists. 
-- **No Cloud Storage:** Your data **never leaves your browser** and is not sent to any external servers. 
-- **No Sensitive Information:** While the extension offers strong privacy features, as with any local storage, avoid storing highly sensitive or unencrypted personal identification data directly within the keyword lists.
-
-For more details, a PRIVACY.md file will be added soon.
+- **Strong Password Protection** 🔒: Your settings are secured by a password. This password is **never stored directly**. Instead, it's protected using a strong cryptographic hashing function (**PBKDF2 with a 100,000-iteration SHA-256 hash and a random salt**). This industry-standard method makes it extremely difficult for anyone to access your settings without the correct password.
+- **No Cloud Storage** ☁️: Your data **never leaves your computer** and is never sent to any external servers. Your privacy is paramount.
+- **Privacy Policy** 📜: For a detailed breakdown of permissions and data handling, please see the [PRIVACY.md](https://www.google.com/url?sa=E&q=.%2FPRIVACY.md) file included in this repository.
 
 ---
 
 ## ✨ Features
 
-- **Comprehensive Blocking** 🚫:
-    - **Domain Blocking:** Prevent access to entire websites. 
-    - **Keyword Blocking:** Block pages based on specific words or phrases found in their content.
-- **Site Allowlist** ✅: Easily create a list of trusted sites that will bypass all blocking rules.
-- **Password-Protected Settings** 🔐: Secure your configuration page with a password to prevent unauthorized changes.
-- **Toggle Blocking On/Off** ⚡: Quickly enable or disable the extension's blocking functionality from the popup.
-- **Contextual Site Actions** 🔗: Block or allow the current website directly from the extension's popup.
-- **Customizable Block Page** 📝: Personalize the message displayed when a page is blocked.
-- **Theme Options** 🌙☀️: Switch between light and dark modes for the settings interface.
-- **Settings Backup & Restore** 💾: Export your entire configuration to a JSON file and import it later.
-- **Firefox/LibreWolf Compatibility**: Built using standard WebExtension APIs, specifically targeting Firefox, LibreWolf, and other Gecko-based browsers.
+- **Comprehensive Blocking** 🚫
+    - **Domain Blocking**: Prevent access to entire websites (e.g., `unwanted-site.com`).
+    - **Keyword Blocking**: Scans page content and blocks pages containing specific words or phrases.
+- **Temporary Access** ⏳
+    - **Request Timed Access**: From the block page, you can grant temporary access to a blocked site or keyword for a specific number of minutes.
+    - **Password Gated**: Temporary access requires the correct password, preventing easy bypasses.
+    - **Manage Active Unblocks**: View and manage all active temporary permissions from the settings page.
+- **Secure & Manageable Password** 🔐
+    - Protect your settings page with a password to prevent unauthorized changes.
+    - Easily change or remove your password from within the settings.
+    - Includes a login attempt lockout to prevent brute-force attacks.
+- **Site Allowlist** ✅
+    - Easily create a list of trusted sites that will always bypass blocking rules.
+- **User-Friendly Interface** 🖥️
+    - **Toggle Blocking On/Off**: Quickly enable or disable all blocking functionality from the popup.
+    - **Contextual Site Actions**: Block or allow the current website with a single click from the extension's popup.
+    - **Customizable Block Page**: Personalize the message displayed on the page that appears when content is blocked.
+    - **Theme Options**: Switch between light and dark modes for a comfortable user interface.
+- **Data Management** 💾
+    - **Settings Backup & Restore**: Export your entire configuration to a JSON file and import it later or on another device.
+- **Firefox/LibreWolf Focused** 🦊
+    - Built using standard WebExtension APIs for excellent compatibility with Firefox, LibreWolf, and other Gecko-based browsers.
 
 ---
 
 ## 🛠️ How It Works (Tech Stack)
 
 LibreShield is built using core web technologies and the powerful WebExtensions API:
+- **HTML**: Structures the user interfaces for the options, popup, and block pages.
+- **CSS**: Styles the entire extension, including responsive design and theme management.
+- **JavaScript (Vanilla JS)**: Powers all the interactive logic, including:
+    - `background.js:` Manages web request blocking, password verification, and temporary unblock timers.
+    - `content.js:` Handles on-page keyword scanning and communicates with the background script.
+    - **UI Logic**: Manages the options page, popup interactions, and the block page.
+- **WebExtensions API (`browser`.)**: The browser-provided API for `storage`, `webRequest`, `tabs`, and `runtime` features, which are the backbone of the extension's functionality.
 
-- **HTML:** Structures the user interfaces for the options, popup, and block pages.
-- **CSS:** Styles the entire extension, including theme management.
-- **JavaScript (Vanilla JS):** Powers all the interactive logic, including:
-    - Background script for webRequestBlocking. 
-    - Content script for on-page keyword scanning.
-    - Logic for options management, password handling, and popup interactions.
-- **WebExtensions API (browser.* / chrome.*):** The browser-provided API for storage, webRequest, tabs, and runtime features. While Chrome uses chrome.*, Firefox/LibreWolf typically use browser.* via polyfills or direct support.
-    
 ---
 
 ## 🚀 How to Use
 
-1. **Install the Extension:**
-    - **From Source (for Developers):** Follow the "Running Locally" steps below.
-    - (Future) From Official Stores: Links to Firefox Add-ons will be provided here once available.
-        
-2. **Open the Popup:** Click on the LibreShield icon in your browser's toolbar.
-    - Toggle blocking on/off.
-    - See the current site and quickly block or allow it.
-        
-3. **Access Settings:**
-    - Click the "Manage Settings" button in the popup, or navigate to about:addons in Firefox/LibreWolf, find LibreShield, and click "Options" or "Preferences".
-    - **Set a Password:** Upon first opening, you'll be prompted to set a password to protect your settings.
-    - **Manage Lists:** Add/remove blocked domains, blocked keywords, and allowed sites.
-    - **Customize Message:** Change the message shown on the block page.
-    - **Export/Import:** Backup or restore your settings.
+1. **Install the Extension**
+    - **From Source (for Developers)**: Follow the "Running Locally" steps below.
+    - **(Future) From Official Stores**: Links to the Firefox Add-ons store will be provided here once it's officially published.
+2. **Set Your Password**
+    - The first time you open the settings page, you will be required to create a password. This keeps your rules and settings secure.
+3. **Manage Settings**
+    - Click the "Manage Settings" button in the popup to open the main options page.
+    - **Manage Lists**: Add or remove items from your Blocked Domains, Blocked Keywords, and Allowed Sites lists.
+    - **Customize**: Change the message shown on the block page and switch between light and dark themes.
+    - **Backup/Restore**: Export your settings to a file for safekeeping.
+4. **Encountering a Blocked Page**
+    - If you land on a page that is blocked, you will see the LibreShield block screen.
+    - If you need temporary access, you can enter your password and specify a duration (in minutes) to bypass the block.
 
 ---
 
 ## 💻 Running Locally (For Development in Firefox/LibreWolf)
 
-To run LibreShield from its source code (e.g., for development or testing):
+To run LibreShield from its source code for development or testing:
 
-1. **Clone this repository:**
+1. Clone this repository:
 
+      
 ```bash
-git clone https://github.com/GlebGoodkovsky/libreshield-project.git`
-```  
-    
-2. **Navigate into the project directory:**
-
-```bash
-cd libreshield-project`
 ```
+//clone the repo
 
-3. **Load as a Temporary Add-on in Firefox/LibreWolf:**
+git clone https://github.com/GlebGoodkovsky/libreshield-project.git
+
+//2. Navigate into the project directory:
+
+cd libreshield-project
+```
+```
     
-    - Open the Add-ons page: Go to about:debugging#/runtime/this-firefox in your browser. 
-    - Click "Load Temporary Add-on...".
-    - Navigate into the libreshield-project directory you just cloned and select any file inside it (e.g., manifest.json). Firefox/LibreWolf will load the entire extension.
 
-The extension icon should now appear in your browser's toolbar. Note that temporary add-ons are removed when the browser is closed. For persistent installation during development, you would typically use web-ext run with the Mozilla Web-Ext tool, or install it permanently after signing.
+2. **Load as a Temporary Add-on in Firefox/LibreWolf:**
+- Open the debugging page by navigating to `about:debugging#/runtime/this-firefox` in your browser.
+- Click **"Load Temporary Add-on...".**
+- Navigate into the `libreshield-project` directory you just cloned and select the `manifest.json` file.
+
+The extension icon will now appear in your browser's toolbar. Note that temporary add-ons are removed when you close the browser.
 
 ---
 
