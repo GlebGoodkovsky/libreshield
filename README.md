@@ -12,7 +12,7 @@ LibreShield is built with privacy as a core principle. All your settings are sto
 
 - **Strong Password Protection** 🔒: Your settings are secured by a password. This password is **never stored directly**. Instead, it's protected using a strong cryptographic hashing function (**PBKDF2 with a 100,000-iteration SHA-256 hash and a random salt**). This industry-standard method makes it extremely difficult for anyone to access your settings without the correct password.
 - **No Cloud Storage** ☁️: Your data **never leaves your computer** and is never sent to any external servers. Your privacy is paramount.
-- **Privacy Policy** 📜: For a detailed breakdown of permissions and data handling, please see the [PRIVACY.md](https://www.google.com/url?sa=E&q=.%2FPRIVACY.md) file included in this repository.
+- **Privacy Policy** 📜: For a detailed breakdown of permissions and data handling, please see the [PRIVACY.md](https://github.com/GlebGoodkovsky/libreshield/blob/main/README.md) file included in this repository.
 
 ---
 
@@ -78,26 +78,19 @@ LibreShield is built using core web technologies and the powerful WebExtensions 
 
 To run LibreShield from its source code for development or testing:
 
-1. Clone this repository:
-
-      
+1. **Clone this repository:**
 ```bash
-```
-//clone the repo
-
 git clone https://github.com/GlebGoodkovsky/libreshield-project.git
-
-//2. Navigate into the project directory:
-
+```
+2. **Navigate into the project directory:**
+```bash
 cd libreshield-project
 ```
-```
-    
 
-2. **Load as a Temporary Add-on in Firefox/LibreWolf:**
-- Open the debugging page by navigating to `about:debugging#/runtime/this-firefox` in your browser.
-- Click **"Load Temporary Add-on...".**
-- Navigate into the `libreshield-project` directory you just cloned and select the `manifest.json` file.
+3. **Load as a Temporary Add-on in Firefox/LibreWolf:**
+    - Open the debugging page by navigating to `about:debugging#/runtime/this-firefox` in your browser.
+    - Click "**Load Temporary Add-on...**".
+    - Navigate into the `libreshield-project` directory you just cloned and select the `manifest.json` file.
 
 The extension icon will now appear in your browser's toolbar. Note that temporary add-ons are removed when you close the browser.
 
