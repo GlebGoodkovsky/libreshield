@@ -1,74 +1,88 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const e = document.getElementById("currentSite");
-    const t = document.getElementById("blockSiteBtn");
-    const o = document.getElementById("allowSiteBtn");
-    const n = document.getElementById("openOptionsBtn");
-    const d = document.getElementById("powerToggle");
-    const i = document.getElementById("powerStatus");
-    let a = "";
-    let c = {};
+    const currentSiteEl = document.getElementById("currentSite");
+    const blockSiteBtn = document.getElementById("blockSiteBtn");
+    const allowSiteBtn = document.getElementById("allowSiteBtn");
+    const openOptionsBtn = document.getElementById("openOptionsBtn");
+    const powerToggle = document.getElementById("powerToggle");
+    const powerStatus = document.getElementById("powerStatus");
+    const blocksTodayStatEl = document.getElementById("blocksTodayStat"); // NEW
+    let currentHostname = "";
+    let settings = {};
 
-    async function r() {
-        c = await browser.storage.local.get({
+    async function initialize() {
+        settings = await browser.storage.local.get({
             blockedDomains: [],
             allowedSites: [],
-            isBlockingEnabled: !0,
-            theme: "light"
+            isBlockingEnabled: true,
+            theme: "light",
+            usageStats: { blocksToday: 0 } // NEW
         });
-        document.body.classList.toggle("dark-mode", "dark" === c.theme);
-        d.checked = c.isBlockingEnabled;
-        i.textContent = c.isBlockingEnabled ? "ON" : "OFF";
+        
+        document.body.classList.toggle("dark-mode", "dark" === settings.theme);
+        powerToggle.checked = settings.isBlockingEnabled;
+        powerStatus.textContent = settings.isBlockingEnabled ? "ON" : "OFF";
+        
+        // NEW: Update stats display
+        blocksTodayStatEl.textContent = settings.usageStats?.blocksToday || 0;
+
         try {
-            const [r] = await browser.tabs.query({ active: !0, currentWindow: !0 });
-            if (r && r.url && !r.url.startsWith("about:")) {
-                const t = new URL(r.url);
-                a = t.hostname;
-                e.textContent = a;
-                s()
-            } else throw new Error("Special or invalid page")
-        } catch (t) {
-            e.textContent = "N/A",
-            blockSiteBtn.disabled = !0,
-            allowSiteBtn.disabled = !0
+            const [activeTab] = await browser.tabs.query({ active: true, currentWindow: true });
+            if (activeTab && activeTab.url && !activeTab.url.startsWith("about:")) {
+                const url = new URL(activeTab.url);
+                currentHostname = url.hostname;
+                currentSiteEl.textContent = currentHostname;
+                updateButtonStates();
+            } else {
+                throw new Error("Special or invalid page");
+            }
+        } catch (error) {
+            currentSiteEl.textContent = "N/A";
+            blockSiteBtn.disabled = true;
+            allowSiteBtn.disabled = true;
         }
     }
 
-    function s() {
-        if (!a) return;
-        const e = c.blockedDomains.includes(a),
-            n = c.allowedSites.includes(a);
-        t.textContent = e ? "Already Blocked" : "Block This Site",
-        t.disabled = e,
-        o.textContent = n ? "Already Allowed" : "Allow This Site",
-        o.disabled = n
+    function updateButtonStates() {
+        if (!currentHostname) return;
+        const isBlocked = settings.blockedDomains.includes(currentHostname);
+        const isAllowed = settings.allowedSites.includes(currentHostname);
+        blockSiteBtn.textContent = isBlocked ? "Already Blocked" : "Block This Site";
+        blockSiteBtn.disabled = isBlocked;
+        allowSiteBtn.textContent = isAllowed ? "Already Allowed" : "Allow This Site";
+        allowSiteBtn.disabled = isAllowed;
     }
 
-    async function l(e, t) {
+    async function modifyLists(listType, hostname) {
         try {
-            if ("blockedDomains" === e) {
-                c.blockedDomains.push(t);
-                c.allowedSites = c.allowedSites.filter(site => site !== t);
-            } else if ("allowedSites" === e) {
-                c.allowedSites.push(t);
-                c.blockedDomains = c.blockedDomains.filter(site => site !== t);
+            if ("blockedDomains" === listType) {
+                settings.blockedDomains.push(hostname);
+                settings.allowedSites = settings.allowedSites.filter(site => site !== hostname);
+            } else if ("allowedSites" === listType) {
+                settings.allowedSites.push(hostname);
+                settings.blockedDomains = settings.blockedDomains.filter(site => site !== hostname);
             }
-            await browser.storage.local.set(c);
-            s();
+            // Use the whole settings object to set, to keep usageStats etc.
+            await browser.storage.local.set(settings); 
+            updateButtonStates();
         } catch (error) {
             console.error('Storage error:', error);
             alert('Failed to save settings. Browser storage may be full.');
         }
     }
-    d.addEventListener("change", () => {
-        c.isBlockingEnabled = d.checked,
-        i.textContent = c.isBlockingEnabled ? "ON" : "OFF",
-        browser.storage.local.set({ isBlockingEnabled: c.isBlockingEnabled })
-    }),
-    t.addEventListener("click", () => l("blockedDomains", a)),
-    o.addEventListener("click", () => l("allowedSites", a)),
-    n.addEventListener("click", () => {
-        browser.runtime.openOptionsPage(),
-        window.close()
-    }),
-    r()
+    
+    powerToggle.addEventListener("change", () => {
+        settings.isBlockingEnabled = powerToggle.checked;
+        powerStatus.textContent = settings.isBlockingEnabled ? "ON" : "OFF";
+        browser.storage.local.set({ isBlockingEnabled: settings.isBlockingEnabled });
+    });
+    
+    blockSiteBtn.addEventListener("click", () => modifyLists("blockedDomains", currentHostname));
+    allowSiteBtn.addEventListener("click", () => modifyLists("allowedSites", currentHostname));
+    
+    openOptionsBtn.addEventListener("click", () => {
+        browser.runtime.openOptionsPage();
+        window.close();
+    });
+    
+    initialize();
 });

@@ -8,12 +8,46 @@ browser.runtime.onInstalled.addListener(() => {
       blockPageMessage: "I don't need this.", 
       isBlockingEnabled: true, 
       theme: 'light',
-      tempUnblocks: []
+      tempUnblocks: [],
+      usageStats: { blocksToday: 0, blocksByValue: {} } // NEW: For stats
     };
     browser.storage.local.set({ ...defaults, ...data });
   });
   startCleanupTimer();
+  
+  // NEW: Set up daily alarm for stats reset
+  browser.alarms.create('dailyStatReset', {
+    periodInMinutes: 1440 // 24 hours
+  });
 });
+
+// ★ NEW – Helper to record block events
+async function recordBlock(type, value) {
+  const { usageStats = { blocksToday: 0, blocksByValue: {} } } = await browser.storage.local.get('usageStats');
+  
+  usageStats.blocksToday = (usageStats.blocksToday || 0) + 1;
+  
+  const key = `${type}:${value}`;
+  usageStats.blocksByValue[key] = (usageStats.blocksByValue[key] || 0) + 1;
+
+  await browser.storage.local.set({ usageStats });
+  console.log(`LibreShield: Block recorded for ${key}. Total today: ${usageStats.blocksToday}`);
+}
+
+// ★ NEW – Listener for the daily alarm
+browser.alarms.onAlarm.addListener(async (alarm) => {
+  if (alarm.name === 'dailyStatReset') {
+    const { usageStats } = await browser.storage.local.get('usageStats');
+    // Keep historical data but reset daily counter
+    const newStats = {
+        ...usageStats,
+        blocksToday: 0
+    };
+    await browser.storage.local.set({ usageStats: newStats });
+    console.log('LibreShield: Daily usage stats have been reset.');
+  }
+});
+
 
 // ★ NEW  – PBKDF2 helper (needed by background & block page)
 async function hashPassword(password, existingSalt = null) {
@@ -88,6 +122,7 @@ async function blockRequestHandler(details) {
 
   if (blockedDomains && blockedDomains.some(blocked => 
       domain === blocked || domain.endsWith('.' + blocked))) {    
+    await recordBlock('domain', domain); // NEW: Record the block
     const blockPageUrl = browser.runtime.getURL('block_page/block.html');
     return { redirectUrl: `${blockPageUrl}?reason=${encodeURIComponent(`Blocked Domain: ${domain}`)}` };
   }
@@ -108,6 +143,7 @@ browser.runtime.onMessage.addListener(async (message, sender) => {
         console.log(`LibreShield: Keyword "${keyword}" is temporarily unblocked`);
         return;
       }
+      await recordBlock('keyword', keyword); // NEW: Record the block
     }
     const blockPageUrl = browser.runtime.getURL('block_page/block.html');
     try {
