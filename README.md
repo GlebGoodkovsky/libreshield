@@ -1,10 +1,11 @@
-# LibreShield
+<h1 align="center">
+<sub>
+<img src="![logo](icons/128x128logo.png)" height="38" width="38">
+</sub>
+LibreShield
+</h1>
 
 A powerful, private, and fully-free content blocker designed as a browser extension. Take control of your browsing experience by blocking unwanted domains, filtering content by keywords, and safeguarding your settings with a robust password system.
-
----
-
-![logo](icons/128x128logo.png)
 
 ---
 
