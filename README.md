@@ -4,6 +4,10 @@ A powerful, private, and fully-free content blocker designed as a browser extens
 
 ---
 
+![logo](icons/128x128logo.png)
+
+---
+
 ## Get LibreShield
 
 **LibreShield is officially available on the Firefox Browser Add-on Store.**
