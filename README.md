@@ -1,5 +1,7 @@
-<h1 align="center" style="font-size: 4rem;">
-  <img src="icons/128x128logo.png" alt="logo" height="100" width="100" style="vertical-align: middle;">
+<h1 align="center">
+  <sub>
+    <img src="icons/128x128logo.png" alt="logo" height="38" width="38">
+  </sub>
   LibreShield
 </h1>
 
