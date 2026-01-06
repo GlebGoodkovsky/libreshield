@@ -1,10 +1,10 @@
-# LibreShield 🛡️
+# LibreShield
 
 A powerful, private, and fully-free content blocker designed as a browser extension. Take control of your browsing experience by blocking unwanted domains, filtering content by keywords, and safeguarding your settings with a robust password system.
 
 ---
 
-## 🚀 Get LibreShield
+## Get LibreShield
 
 **LibreShield is officially available on the Firefox Browser Add-on Store.**
 
@@ -14,46 +14,46 @@ A powerful, private, and fully-free content blocker designed as a browser extens
 
 ---
 
-## ⚠️ Important User Information
+## Important User Information
 
 ### Data Handling & Security
 
 LibreShield is built with privacy as a core principle. All your settings are stored locally in your browser's own secure storage.
 
--   **Strong Password Protection** 🔒: Your settings are secured by a password. This password is **never stored directly**. Instead, it's protected using a strong cryptographic hashing function (**PBKDF2 with a 100,000-iteration SHA-256 hash and a random salt**). This industry-standard method makes it extremely difficult for anyone to access your settings without the correct password.
--   **No Cloud Storage** ☁️: Your data **never leaves your computer** and is never sent to any external servers. Your privacy is paramount.
--   **Privacy Policy** 📜: For a detailed breakdown of permissions and data handling, please see the [PRIVACY.md](https://github.com/GlebGoodkovsky/libreshield/blob/main/PRIVACY.md) file included in this repository.
+-   **Strong Password Protection**: Your settings are secured by a password. This password is **never stored directly**. Instead, it's protected using a strong cryptographic hashing function (**PBKDF2 with a 100,000-iteration SHA-256 hash and a random salt**). This industry-standard method makes it extremely difficult for anyone to access your settings without the correct password.
+-   **No Cloud Storage**: Your data **never leaves your computer** and is never sent to any external servers. Your privacy is paramount.
+-   **Privacy Policy**: For a detailed breakdown of permissions and data handling, please see the [PRIVACY.md](https://github.com/GlebGoodkovsky/libreshield/blob/main/PRIVACY.md) file included in this repository.
 
 ---
 
-## ✨ Features
+## Features
 
--   **Comprehensive Blocking** 🚫
+-   **Comprehensive Blocking**
     -   **Domain Blocking**: Prevent access to entire websites (e.g., `unwanted-site.com`).
     -   **Keyword Blocking**: Scans page content and blocks pages containing specific words or phrases.
--   **Temporary Access** ⏳
+-   **Temporary Access**
     -   **Request Timed Access**: From the block page, you can grant temporary access to a blocked site or keyword for a specific number of minutes.
     -   **Password Gated**: Temporary access requires the correct password, preventing easy bypasses.
     -   **Manage Active Unblocks**: View and manage all active temporary permissions from the settings page.
--   **Secure & Manageable Password** 🔐
+-   **Secure & Manageable Password**
     -   Protect your settings page with a password to prevent unauthorized changes.
     -   Easily change or remove your password from within the settings.
     -   Includes a login attempt lockout to prevent brute-force attacks.
--   **Site Allowlist** ✅
+-   **Site Allowlist**
     -   Easily create a list of trusted sites that will always bypass blocking rules.
--   **User-Friendly Interface** 🖥️
+-   **User-Friendly Interface**
     -   **Toggle Blocking On/Off**: Quickly enable or disable all blocking functionality from the popup.
     -   **Contextual Site Actions**: Block or allow the current website with a single click from the extension's popup.
     -   **Customizable Block Page**: Personalize the message displayed on the page that appears when content is blocked.
     -   **Theme Options**: Switch between light and dark modes for a comfortable user interface.
--   **Data Management** 💾
+-   **Data Management**
     -   **Settings Backup & Restore**: Export your entire configuration to a JSON file and import it later or on another device.
--   **Firefox/LibreWolf Focused** 🦊
+-   **Firefox/LibreWolf Focused**
     -   Built using standard WebExtension APIs for excellent compatibility with Firefox, LibreWolf, and other Gecko-based browsers.
 
 ---
 
-## 🛠️ How It Works (Tech Stack)
+## How It Works (Tech Stack)
 
 LibreShield is built using core web technologies and the powerful WebExtensions API:
 -   **HTML**: Structures the user interfaces for the options, popup, and block pages.
@@ -66,7 +66,7 @@ LibreShield is built using core web technologies and the powerful WebExtensions 
 
 ---
 
-## 💻 Running Locally (For Development in Firefox/LibreWolf)
+## Running Locally (For Development in Firefox/LibreWolf)
 
 To run LibreShield from its source code for development or testing:
 
@@ -88,7 +88,7 @@ The extension icon will now appear in your browser's toolbar. Note that temporar
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Suggestions, bug reports, and pull requests are warmly welcome! Please feel free to open an issue to discuss features or submit changes.
 
