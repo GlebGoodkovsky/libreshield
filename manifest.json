@@ -3,6 +3,10 @@
   "name": "LibreShield",
   "version": "1.1.0",
   "description": "A powerful, private, and fully-free content blocker.",
+  "data_collection_permissions": {
+    "required": [],
+    "optional": []
+  },
   "permissions": [
     "storage",
     "webRequest",
