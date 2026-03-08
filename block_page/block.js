@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentDomain = '';
   let currentKeyword = '';
 
+  browser.storage.local.get('theme').then(({ theme }) => {
+    if (theme === 'dark') document.body.classList.add('dark-mode');
+  });
+
   browser.storage.local.get('blockPageMessage').then(settings => {
     blockMessageElement.textContent = settings.blockPageMessage || "I don't need this.";
   });
@@ -20,13 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (reason) {
     blockReasonElement.textContent = `(${reason})`;
     if (reason.startsWith('Blocked Domain:')) {
-      currentDomain = reason.replace('Blocked Domain: ', '').trim();
+      currentDomain = reason.replace('Blocked Domain:', '').trim();
     } else if (reason.startsWith('Content Keyword:')) {
-      currentKeyword = reason.replace('Content Keyword: "', '').replace('"', '').trim();
+      // Use regex to safely extract keyword regardless of its contents
+      const match = reason.match(/^Content Keyword:\s*"(.*)"$/s);
+      currentKeyword = match ? match[1] : reason.replace('Content Keyword:', '').trim();
     }
   }
 
-  // Show password field only if a password is set
   browser.storage.local.get('passwordHash').then(({ passwordHash }) => {
     if (passwordHash) passwordContainer.style.display = 'block';
   });

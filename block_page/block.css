@@ -1,12 +1,47 @@
-html,body{margin:0;padding:0;width:100%;height:100%;background-color:#1a1a1a;color:#e0e0e0;font-family:sans-serif;display:flex;justify-content:center;align-items:center;text-align:center}.content{max-width:80%}h1{font-size:4em;font-weight:700;margin-bottom:20px}p{font-size:1.2em;color:#888}
+:root {
+    --bg: #f0f2f5;
+    --text: #333;
+    --subtle: #666;
+    --input-bg: rgba(0, 0, 0, 0.05);
+    --input-bg-solid: #e8eaed;
+    --input-text: #333;
+    --border: rgba(0, 0, 0, 0.1);
+}
 
-/* NEW: Temporary Unblock Section Styles */
+.dark-mode {
+    --bg: #1a1a1a;
+    --text: #e0e0e0;
+    --subtle: #888;
+    --input-bg: rgba(255, 255, 255, 0.08);
+    --input-bg-solid: #2a2a2a;
+    --input-text: #e0e0e0;
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.content { max-width: 80%; }
+h1 { font-size: 4em; font-weight: 700; margin-bottom: 20px; }
+p { font-size: 1.2em; color: var(--subtle); }
+
 .temp-unblock-section {
     margin-top: 40px;
     padding: 25px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--input-bg);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border);
 }
 
 .temp-unblock-section h3 {
@@ -17,7 +52,7 @@ html,body{margin:0;padding:0;width:100%;height:100%;background-color:#1a1a1a;col
 
 .temp-unblock-section p {
     font-size: 1em;
-    color: #bbb;
+    color: var(--subtle);
     margin-bottom: 20px;
 }
 
@@ -35,8 +70,8 @@ html,body{margin:0;padding:0;width:100%;height:100%;background-color:#1a1a1a;col
     font-size: 1.1em;
     border: 2px solid #4CAF50;
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #e0e0e0;
+    background-color: var(--input-bg-solid);
+    color: var(--input-text);
     width: 80px;
     text-align: center;
 }
@@ -44,7 +79,27 @@ html,body{margin:0;padding:0;width:100%;height:100%;background-color:#1a1a1a;col
 #tempMinutes:focus {
     outline: none;
     border-color: #66BB6A;
-    background-color: rgba(255, 255, 255, 0.15);
+}
+
+#tempPassword {
+    padding: 10px;
+    font-size: 1em;
+    border: 2px solid #e74c3c;
+    border-radius: 8px;
+    background-color: var(--input-bg-solid);
+    color: #333 !important;
+}
+
+.dark-mode #tempPassword {
+    color: #e0e0e0 !important;
+}
+
+#tempPassword::placeholder {
+    color: #999;
+}
+
+#tempPassword:focus {
+    outline: none;
 }
 
 #requestTempUnblock {
@@ -83,31 +138,15 @@ html,body{margin:0;padding:0;width:100%;height:100%;background-color:#1a1a1a;col
     margin-top: 10px;
 }
 
-#tempUnblockStatus.success {
-    color: #4CAF50;
-}
+#tempUnblockStatus.success { color: #4CAF50; }
+#tempUnblockStatus.error { color: #f44336; }
+#tempUnblockStatus.info { color: #2196F3; }
 
-#tempUnblockStatus.error {
-    color: #f44336;
-}
-
-#tempUnblockStatus.info {
-    color: #2196F3;
-}
-
-/* Responsive design for smaller screens */
 @media (max-width: 480px) {
     .temp-unblock-controls {
         flex-direction: column;
         gap: 10px;
     }
-    
-    #tempMinutes {
-        width: 120px;
-    }
-    
-    #requestTempUnblock {
-        width: 100%;
-        max-width: 250px;
-    }
+    #tempMinutes { width: 120px; }
+    #requestTempUnblock { width: 100%; max-width: 250px; }
 }
