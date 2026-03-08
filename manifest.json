@@ -3,10 +3,6 @@
   "name": "LibreShield",
   "version": "1.1.0",
   "description": "A powerful, private, and fully-free content blocker.",
-  "data_collection_permissions": {
-    "required": [],
-    "optional": []
-  },
   "permissions": [
     "storage",
     "webRequest",
@@ -57,7 +53,11 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "libreshield@glebgoodkovsky.dev",
-      "strict_min_version": "109.0"
+      "strict_min_version": "109.0",
+      "data_collection_permissions": {
+        "required": [],
+        "optional": []
+      },
     }
   }
 }
