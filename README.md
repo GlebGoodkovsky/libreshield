@@ -128,3 +128,7 @@ MIT — see [LICENSE](LICENSE) for details.
 This project was built as a hands-on exercise in WebExtension development. An AI assistant was used as a coding partner throughout, helping write, debug, and improve the code while I learned the fundamentals. The goal was always to understand what was being built.
 
 ---
+
+This repository is primarily hosted at [git.goodkovsky.com](https://git.goodkovsky.com/gleb/libreshield) and is mirrored to GitHub for visibility.
+
+---
