@@ -85,15 +85,15 @@ You can clone this project from either the primary self-hosted instance or the G
 
 **From Self-Hosted (Primary):**
 
-    ```bash
-    git clone https://git.goodkovsky.com/gleb/libreshield.git
-    ```
+```bash
+git clone https://git.goodkovsky.com/gleb/libreshield.git
+```
 
 **From GitHub (Mirror):**
 
-    ```bash
-    git clone https://github.com/glebgoodkovsky/libreshield.git
-    ```
+```bash
+git clone https://github.com/glebgoodkovsky/libreshield.git
+```
 
 2. **Navigate into the directory:**
 
