@@ -24,7 +24,7 @@ A privacy-focused, free, and open-source content blocker for Firefox and other G
 LibreShield is built with privacy as a core principle.
 
 -   **No Cloud, No Tracking**: All your data is stored locally in your browser. Nothing is ever sent to any external server.
--   **Strong Password Protection**: Your settings can be protected with a password. The password is never stored directly — it is hashed using **PBKDF2 with 100,000 iterations, SHA-256, and a random salt**, an industry-standard method that makes it extremely difficult to reverse.
+-   **Strong Password Protection**: Your settings can be protected with a password. The password is never stored directly — it is hashed using PBKDF2 with 100,000 iterations, SHA-256, and a random salt, an industry-standard method that makes it extremely difficult to reverse.
 -   **Brute-Force Lockout**: After too many incorrect password attempts, access is locked for 5 minutes. The lockout persists even if the settings page is closed and reopened.
 -   **Safe Exports**: When exporting your settings, password data is automatically excluded from the backup file.
 -   **Privacy Policy**: See [PRIVACY.md](https://github.com/glebgoodkovsky/libreshield/blob/main/PRIVACY.md) for a full breakdown of permissions and data handling.
