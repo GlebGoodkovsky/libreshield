@@ -79,15 +79,28 @@ LibreShield is built with plain web technologies and the WebExtensions API - no 
 
 ## Running Locally (Development)
 
-1.  **Clone the repository:**
+1. **Clone the repository:**
+
+You can clone this project from either the primary self-hosted instance or the GitHub mirror:
+
+**From Self-Hosted (Primary):**
+
+    ```bash
+    git clone https://git.goodkovsky.com/gleb/libreshield.git
+    ```
+
+**From GitHub (Mirror):**
+
     ```bash
     git clone https://github.com/glebgoodkovsky/libreshield.git
     ```
 
-2.  **Navigate into the directory:**
-    ```bash
-    cd libreshield
-    ```
+2. **Navigate into the directory:**
+
+```bash
+cd libreshield
+```
+
 
 3.  **Load as a Temporary Add-on in Firefox or LibreWolf:**
     -   Go to `about:debugging#/runtime/this-firefox` in your browser.
