@@ -29,7 +29,7 @@ LibreShield is built with privacy as a core principle.
 -   **Strong Password Protection**: Your settings can be protected with a password. The password is never stored directly — it is hashed using PBKDF2 with 100,000 iterations, SHA-256, and a random salt, an industry-standard method that makes it extremely difficult to reverse.
 -   **Brute-Force Lockout**: After too many incorrect password attempts, access is locked for 5 minutes. The lockout persists even if the settings page is closed and reopened.
 -   **Safe Exports**: When exporting your settings, password data is automatically excluded from the backup file.
--   **Privacy Policy**: See [PRIVACY.md](https://github.com/glebgoodkovsky/libreshield/blob/main/PRIVACY.md) for a full breakdown of permissions and data handling.
+-   **Privacy Policy**: See [PRIVACY.md](https://git.goodkovsky.com/gleb/libreshield/src/branch/main/PRIVACY.md) for a full breakdown of permissions and data handling.
 
 ---
 
@@ -91,6 +91,12 @@ You can clone this project from either the primary self-hosted instance or the G
 git clone https://git.goodkovsky.com/gleb/libreshield.git
 ```
 
+**From Codeberg (Mirror):**
+
+```bash
+git clone https://codeberg.org/GlebGoodkovsky/libreshield.git
+```
+
 **From GitHub (Mirror):**
 
 ```bash
@@ -102,7 +108,6 @@ git clone https://github.com/glebgoodkovsky/libreshield.git
 ```bash
 cd libreshield
 ```
-
 
 3.  **Load as a Temporary Add-on in Firefox or LibreWolf:**
     -   Go to `about:debugging#/runtime/this-firefox` in your browser.
