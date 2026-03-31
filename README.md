@@ -13,70 +13,11 @@ A privacy-focused, free, and open-source content blocker for Firefox and other G
 
 **LibreShield is available through multiple different sources.**
 
-<style>
-  .badge-link {
-    display: flex;
-    text-decoration: none;
-    border: 1px solid #232323;
-    border-radius: 1px;
-    overflow: hidden;
-    height: 32px;
-    margin-right: 6px;
-  }
-
-  .badge-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 8px;
-    background-color: #323232; 
-    border-right: 1px solid #232323;
-  }
-
-  .badge-text {
-    display: flex;
-    align-items: center;
-    padding: 0 8px;
-    background-color: #3d3d3d;
-    color: #ffffff;
-    font-size: 13px;
-  }
-  .badge-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-top: 8px;
-  }
-</style>
-
-<div class="badge-container">
-
-  <a href="https://libreshield.goodkovsky.com/" class="badge-link">
-    <div class="badge-logo"><img src="assets/libreshield.png" alt="Website" height="24"></div>
-    <div class="badge-text">Website</div>
-  </a>
-
-  <a href="https://addons.mozilla.org/en-US/firefox/addon/libreshield/" class="badge-link">
-    <div class="badge-logo"><img src="assets/firefox.png" alt="Firefox" height="24"></div>
-    <div class="badge-text">Mozilla Add-ons Store</div>
-  </a>
-
-  <a href="https://git.goodkovsky.com/gleb/libreshield.git" class="badge-link">
-    <div class="badge-logo"><img src="assets/forgejo.png" alt="Forgejo" height="24"></div>
-    <div class="badge-text">Forgejo (Main)</div>
-  </a>
-
-  <a href="https://codeberg.org/GlebGoodkovsky/libreshield.git" class="badge-link">
-    <div class="badge-logo"><img src="assets/codeberg.png" alt="Codeberg" height="24"></div>
-    <div class="badge-text">Codeberg (Mirror)</div>
-  </a>
-
-  <a href="https://github.com/GlebGoodkovsky/libreshield.git" class="badge-link">
-    <div class="badge-logo"><img src="assets/github.png" alt="GitHub" height="24"></div>
-    <div class="badge-text">GitHub (Mirror)</div>
-  </a>
-
-</div>
+- [Website](https://libreshield.goodkovsky.com/)
+- [Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/libreshield/)
+- [Forgejo (Main)](https://git.goodkovsky.com/gleb/libreshield.git)
+- [Codeberg (Mirror)](https://codeberg.org/GlebGoodkovsky/libreshield.git)
+- [GitHub (Mirror)](https://github.com/GlebGoodkovsky/libreshield.git)
 
 ---
 
